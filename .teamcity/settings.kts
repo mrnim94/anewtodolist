@@ -46,8 +46,20 @@ object Build : BuildType({
         }
     }
 
+    features {
+        freeDiskSpace {
+            requiredSpace = "1gb"
+            failBuild = true
+        }
+    }
+
     triggers {
         vcs {
+            branchFilter = """
+                +:lesson1
+                +:lesson2
+                +:main
+            """.trimIndent()
         }
     }
 })
