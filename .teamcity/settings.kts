@@ -126,26 +126,7 @@ object FastTest : BuildType({
     }
 })
 
-object FastTest : BuildType({
-    name = "FastTest"
 
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            name = "Nim custom step FastTest"
-            goals = "clean test"
-            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"
-        }
-    }
-
-    triggers {
-        vcs {
-        }
-    }
-})
 
 object SlowTest : BuildType({
     name = "SlowTest"
