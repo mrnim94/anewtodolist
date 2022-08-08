@@ -30,6 +30,12 @@ version = "2022.04"
 project {
 
     buildType(Build)
+    buildType(Package)
+
+    sequential {
+        buildType(Build)
+        buildType(Package)
+    }
 }
 
 object Build : BuildType({
@@ -41,8 +47,8 @@ object Build : BuildType({
 
     steps {
         maven {
-            name = "Nim custom step name"
-            goals = "clean test"
+            name = "Nim custom step Build"
+            goals = "clean compile"
             runnerArgs = "-Dmaven.test.failure.ignore=true"
         }
     }
@@ -68,6 +74,31 @@ object Build : BuildType({
         freeDiskSpace {
             requiredSpace = "1gb"
             failBuild = true
+        }
+    }
+})
+
+object Package : BuildType({
+    name = "Package"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            name = "Nim custom step Package"
+            goals = "clean package"
+            runnerArgs = "-Dmaven.test.failure.ignore=true"
+        }
+    }
+    
+    // dependencies {
+    //     snapshot(Build) {}
+    // }
+
+    triggers {
+        vcs {
         }
     }
 })
