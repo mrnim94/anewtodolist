@@ -92,10 +92,6 @@ object Package : BuildType({
             runnerArgs = "-Dmaven.test.failure.ignore=true"
         }
     }
-    
-    // dependencies {
-    //     snapshot(Build) {}
-    // }
 
     triggers {
         vcs {
