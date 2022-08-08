@@ -30,9 +30,9 @@ version = "2022.04"
 project {
 
     buildType(Build)
-    buildType(Package)
     buildType(FastTest)
     buildType(SlowTest)
+    buildType(Package)
 
     sequential {
         buildType(Build)
