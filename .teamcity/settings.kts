@@ -29,18 +29,20 @@ version = "2022.04"
 
 project {
 
-    buildType(Maven("Build", "clean compile"))
-    buildType(Maven("FastTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
-    buildType(Maven("SLowTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
-    buildType(Maven("Package", "clean package", "-Dmaven.test.failure.ignore=true"))
-
-    sequential {
+    val bts = sequential {
         buildType(Maven("Build", "clean compile"))
         parallel{
             buildType(Maven("FastTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
             buildType(Maven("SLowTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
         }
         buildType(Maven("Package", "clean package", "-Dmaven.test.failure.ignore=true"))
+    }.buildType()
+
+    bts.forEach { buildType(it) }
+    bts.last().triggers {
+        vcs {
+
+        }
     }
 }
 
