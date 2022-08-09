@@ -38,15 +38,14 @@ project {
         buildType(Maven("Package", "clean package", "-DskipTests"))
     }.buildTypes()
 
+
     bts.forEach { buildType(it) }
     bts.last().triggers {
-        vcs {
-
-        }
+        vcs {}
     }
 }
 
-object Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
+class Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
     this.name = name
 
     vcs {
