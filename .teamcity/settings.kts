@@ -29,23 +29,23 @@ version = "2022.04"
 
 project {
 
-    buildType(Build)
-    buildType(FastTest)
-    buildType(SlowTest)
-    buildType(Package)
+    buildType(Maven("Build", "clean compile"))
+    buildType(Maven("FastTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
+    buildType(Maven("SLowTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
+    buildType(Maven("Package", "clean package", "-Dmaven.test.failure.ignore=true"))
 
     sequential {
-        buildType(Build)
-        parallel {
-            buildType(FastTest)
-            buildType(SlowTest)
+        buildType(Maven("Build", "clean compile"))
+        parallel{
+            buildType(Maven("FastTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
+            buildType(Maven("SLowTest", "clean test", "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
         }
-        buildType(Package)
+        buildType(Maven("Package", "clean package", "-Dmaven.test.failure.ignore=true"))
     }
 }
 
-object Build : BuildType({
-    name = "Build"
+object Maven(name: String, goals: String, runnerArgs: String? = null) : BuildType({
+    this.name = name
 
     vcs {
         root(DslContext.settingsRoot)
@@ -53,9 +53,8 @@ object Build : BuildType({
 
     steps {
         maven {
-            name = "Nim custom step Build"
-            goals = "clean compile"
-            runnerArgs = "-Dmaven.test.failure.ignore=true"
+            this.goals = goals
+            this.runnerArgs = runnerArgs
         }
     }
 
@@ -80,71 +79,6 @@ object Build : BuildType({
         freeDiskSpace {
             requiredSpace = "1gb"
             failBuild = true
-        }
-    }
-})
-
-object Package : BuildType({
-    name = "Package"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            name = "Nim custom step Package"
-            goals = "clean package"
-            runnerArgs = "-Dmaven.test.failure.ignore=true"
-        }
-    }
-
-    triggers {
-        vcs {
-        }
-    }
-})
-
-object FastTest : BuildType({
-    name = "FastTest"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            name = "Nim custom step FastTest"
-            goals = "clean test"
-            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"
-        }
-    }
-
-    triggers {
-        vcs {
-        }
-    }
-})
-
-
-
-object SlowTest : BuildType({
-    name = "SlowTest"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        maven {
-            name = "Nim custom step SlowTest"
-            goals = "clean test"
-            runnerArgs = "-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"
-        }
-    }
-
-    triggers {
-        vcs {
         }
     }
 })
