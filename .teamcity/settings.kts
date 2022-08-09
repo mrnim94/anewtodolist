@@ -38,7 +38,6 @@ project {
         buildType(Maven("Package", "clean package", "-DskipTests"))
     }.buildTypes()
 
-
     bts.forEach { buildType(it) }
     bts.last().triggers {
         vcs {}
